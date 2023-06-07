@@ -21,7 +21,7 @@ int main(){
 
     for(int n=0; n<nt; n++){
         auto tic = chrono::steady_clock::now();
-        
+
         #pragma omp parallel for collapse(2)
         for(int j=1; j<ny-1; j++)
             for(int i=1; i<nx-1; i++){
@@ -30,7 +30,7 @@ int main(){
                     pow((u[j][i+1] - u[j][i-1]) / (2 * dx),2) - 2 * ((u[j+1][i] - u[j-1][i]) / (2 * dy) *
                      (v[j][i+1] - v[j][i-1]) / (2 * dx)) - pow((v[j+1][i] - v[j-1][i]) / (2 * dy),2));
         }
-        for(int it=1; it<ny-1; it++){
+        for(int it=0; it<nit; it++){
             // pn = p.copy()
             vector<vector<double> > pn(ny, vector<double>(nx));
             for(int j=0; j<ny; j++){
@@ -38,7 +38,7 @@ int main(){
                     pn[j][i] = p[j][i];
                 }
             }
-#pragma omp parallel for
+#pragma omp parallel for collapse(2)
             for(int j=1; j<ny-1; j++){
                 for(int i=1; i<nx-1; i++){
                     p[j][i] = ( pow(dy, 2) * (pn[j][i+1] + pn[j][i-1]) +
